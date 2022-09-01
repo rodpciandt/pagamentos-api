@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -19,7 +20,7 @@ public class PagamentoController {
     private PagamentoService service;
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody PagamentoDTO dto) {
+    public ResponseEntity<?> create(@Valid @RequestBody PagamentoDTO dto) {
         var pagamentoSaved = service.create(dto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -35,18 +36,18 @@ public class PagamentoController {
         return ResponseEntity.ok( service.findAll());
     }
 
-    @GetMapping("{idPagamento}")
-    public ResponseEntity<?> findById(@RequestParam Long idPagamento) {
+    @GetMapping("/{idPagamento}")
+    public ResponseEntity<?> findById(@PathVariable Long idPagamento) {
         return ResponseEntity.ok( service.findById(idPagamento));
     }
 
     @PutMapping("/{idPagamento}")
-    public ResponseEntity<?> update(@RequestParam Long idPagamento, @RequestBody PagamentoDTO dto) {
+    public ResponseEntity<?> update(@PathVariable Long idPagamento, @Valid @RequestBody PagamentoDTO dto) {
         return ResponseEntity.ok( service.update(idPagamento, dto) );
     }
 
     @DeleteMapping("/{idPagamento}")
-    public ResponseEntity<?> delete(@RequestParam Long idPagamento) {
+    public ResponseEntity<?> delete(@PathVariable Long idPagamento) {
         service.delete(idPagamento);
 
         return ResponseEntity.ok().build();
