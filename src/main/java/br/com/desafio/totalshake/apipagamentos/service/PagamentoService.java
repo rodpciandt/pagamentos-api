@@ -4,13 +4,12 @@ package br.com.desafio.totalshake.apipagamentos.service;
 import br.com.desafio.totalshake.apipagamentos.dto.PagamentoDTO;
 import br.com.desafio.totalshake.apipagamentos.enums.Status;
 import br.com.desafio.totalshake.apipagamentos.model.Pagamento;
+import br.com.desafio.totalshake.apipagamentos.client.TotalShakeClient;
 import br.com.desafio.totalshake.apipagamentos.repository.PagamentoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.net.URL;
 import java.util.List;
 
 @Service
@@ -51,21 +50,33 @@ public class PagamentoService {
         repository.delete(pagamento);
     }
 
-    public void updatePaymentStatus(Long idPagamento, String status) {
+
+    @Autowired
+    private TotalShakeClient client;
+
+    public PagamentoDTO updatePaymentStatus(Long idPagamento, Status status) {
         var pagamento = repository.findById(idPagamento).orElseThrow(() -> new RuntimeException("!!"));
+        pagamento.setStatus(status);
 
-        //TODO update status
+        var updatedPagamento = repository.save(pagamento);
+        syncWithTotalShake(updatedPagamento);
 
+        return mapper.map(updatedPagamento, PagamentoDTO.class);
+
+    }
+
+    private void syncWithTotalShake(Pagamento updatedPagamento) {
         String statusPedido = "";
-        if (pagamento.getStatus().equals(Status.CONFIRMADO))
+        if (updatedPagamento.getStatus().equals(Status.CONFIRMADO))
             statusPedido = "PAGO";
-        else if (pagamento.getStatus().equals(Status.CANCELADO))
+        else if (updatedPagamento.getStatus().equals(Status.CANCELADO))
             statusPedido = "CANCELADO";
 
-        String url = String.format("http://localhost:8080/total-shake/api/%s/%s", pagamento.getPedidoId(), statusPedido);
-        RestTemplate restTemplate = new RestTemplate();
-
-
+        try {
+            client.atualizaStatusPedido(updatedPagamento.getPedidoId(), statusPedido);
+        } catch (Exception ex) {
+            System.out.println("Err - total shake api: " + ex.getMessage());
+        }
     }
 
 

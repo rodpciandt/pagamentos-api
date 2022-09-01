@@ -2,6 +2,7 @@ package br.com.desafio.totalshake.apipagamentos.controller;
 
 
 import br.com.desafio.totalshake.apipagamentos.dto.PagamentoDTO;
+import br.com.desafio.totalshake.apipagamentos.enums.Status;
 import br.com.desafio.totalshake.apipagamentos.service.PagamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/pagamentos/")
+@RequestMapping("/")
 public class PagamentoController {
 
     @Autowired
@@ -50,4 +51,10 @@ public class PagamentoController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/{idPagamento}/{status}")
+    public ResponseEntity<?> updateStatusPagamento(@PathVariable Long idPagamento, @PathVariable Status status) {
+        return ResponseEntity.ok(service.updatePaymentStatus(idPagamento, status));
+    }
+
 }
