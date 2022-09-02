@@ -7,10 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
 @Getter
@@ -32,18 +29,17 @@ public class PagamentoDTO {
     private BigDecimal valor;
 
     @NotBlank
-    @Max(value = 10, message = "nome deve ter no maximo 100 caracteres")
+    @Size(max = 100, message = "nome deve ter no maximo 100 caracteres")
     private String nome;
 
     @NotBlank
-    @Max(value = 10, message = "numero deve ter no maximo 100 caracteres")
+    @Size(max = 100, message = "numero deve ter no maximo 100 caracteres")
     private String numero;
 
 
     // TODO
     @NotBlank
-    @Min(value = 3, message = "codigo deve ter no minimo 3 caracteres")
-    @Max(value = 3, message = "codigo deve ter no maximo 100 caracteres")
+    @Size(min = 3, max = 3, message = "Codigo deve ter 3 caracteres")
     private String codigo;
 
     @NotNull

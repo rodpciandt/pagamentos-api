@@ -40,7 +40,10 @@ public class PagamentoService {
 
     public PagamentoDTO update(Long id, PagamentoDTO dto) {
         var pagamento = repository.findById(id).orElseThrow(() -> new RuntimeException("!!"));
+        dto.setId(pagamento.getId());
         mapper.map(dto, pagamento);
+
+
 
         return mapper.map(repository.save(pagamento), PagamentoDTO.class);
     }
