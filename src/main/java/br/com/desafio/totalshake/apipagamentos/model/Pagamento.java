@@ -39,18 +39,4 @@ public class Pagamento {
     @Enumerated(EnumType.STRING)
     private FormaDePagamento formaDePagamento;
 
-    // todo MAPPER
-    public static Pagamento of(PagamentoDTO dto) {
-        var pagamento = new Pagamento();
-
-        pagamento.setValor(dto.getValor());
-        pagamento.setNome(dto.getNome());
-        pagamento.setNumero(dto.getNumero());
-        pagamento.setCodigo(dto.getCodigo());
-        pagamento.setStatus(dto.getStatus());
-        pagamento.setExpiracao(dto.getExpiracao());
-        pagamento.setPedidoId(dto.getPedidoId());
-
-        return pagamento;
-    }
 }

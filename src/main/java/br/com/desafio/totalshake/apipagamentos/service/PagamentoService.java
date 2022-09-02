@@ -3,6 +3,7 @@ package br.com.desafio.totalshake.apipagamentos.service;
 
 import br.com.desafio.totalshake.apipagamentos.dto.PagamentoDTO;
 import br.com.desafio.totalshake.apipagamentos.enums.Status;
+import br.com.desafio.totalshake.apipagamentos.exception.PaymentNotFoundException;
 import br.com.desafio.totalshake.apipagamentos.model.Pagamento;
 import br.com.desafio.totalshake.apipagamentos.client.TotalShakeClient;
 import br.com.desafio.totalshake.apipagamentos.repository.PagamentoRepository;
@@ -27,7 +28,7 @@ public class PagamentoService {
     }
 
     public PagamentoDTO findById(Long id) {
-        var pagamento = repository.findById(id).orElseThrow(() -> new RuntimeException("!!"));
+        Pagamento pagamento = findPayment(id);
         return mapper.map(pagamento, PagamentoDTO.class);
     }
 
@@ -39,7 +40,7 @@ public class PagamentoService {
     }
 
     public PagamentoDTO update(Long id, PagamentoDTO dto) {
-        var pagamento = repository.findById(id).orElseThrow(() -> new RuntimeException("!!"));
+        Pagamento pagamento = findPayment(id);
         dto.setId(pagamento.getId());
         mapper.map(dto, pagamento);
 
@@ -49,7 +50,7 @@ public class PagamentoService {
     }
 
     public void delete(Long id) {
-        var pagamento = repository.findById(id).orElseThrow(() -> new RuntimeException("!!"));
+        Pagamento pagamento = findPayment(id);
         repository.delete(pagamento);
     }
 
@@ -58,7 +59,7 @@ public class PagamentoService {
     private TotalShakeClient client;
 
     public PagamentoDTO updatePaymentStatus(Long idPagamento, Status status) {
-        var pagamento = repository.findById(idPagamento).orElseThrow(() -> new RuntimeException("!!"));
+        Pagamento pagamento = findPayment(idPagamento);
         pagamento.setStatus(status);
 
         var updatedPagamento = repository.save(pagamento);
@@ -66,6 +67,10 @@ public class PagamentoService {
 
         return mapper.map(updatedPagamento, PagamentoDTO.class);
 
+    }
+
+    private Pagamento findPayment(Long idPagamento) {
+        return repository.findById(idPagamento).orElseThrow(PaymentNotFoundException::new);
     }
 
     private void syncWithTotalShake(Pagamento updatedPagamento) {
@@ -83,6 +88,5 @@ public class PagamentoService {
     }
 
 
-    // TODO CLEAN CODE
 
 }

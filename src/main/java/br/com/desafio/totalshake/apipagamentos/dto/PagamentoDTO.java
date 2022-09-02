@@ -25,7 +25,7 @@ public class PagamentoDTO {
     private String expiracao;
 
     @NotNull
-    @Min(value = 0, message = "Valor deve ser positivo")
+    @Positive(message = "Valor deve ser positivo")
     private BigDecimal valor;
 
     @NotBlank
@@ -36,8 +36,6 @@ public class PagamentoDTO {
     @Size(max = 100, message = "numero deve ter no maximo 100 caracteres")
     private String numero;
 
-
-    // TODO
     @NotBlank
     @Size(min = 3, max = 3, message = "Codigo deve ter 3 caracteres")
     private String codigo;
@@ -45,5 +43,6 @@ public class PagamentoDTO {
     @NotNull
     private Status status;
 
+    @NotNull
     private FormaDePagamento formaDePagamento;
 }
